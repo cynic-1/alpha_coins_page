@@ -9,7 +9,9 @@ const filterHandler = (value: any, row: any, column: any) => {
   return row[property] === value
 }
 
-axios.get('http://ec2-13-210-227-179.ap-southeast-2.compute.amazonaws.com:3000/top_tokens_vs_btc'/* '/api/top_tokens_vs_btc' */).then((response: any) => {
+axios.get('http://ec2-13-210-227-179.ap-southeast-2.compute.amazonaws.com:3000/top_tokens_vs_btc'/* '/api/top_tokens_vs_btc' */, {
+  timeout: 10000,
+}).then((response: any) => {
   data.value = response.data
   filters.value = [
     ...new Set(data.value.map((item: any) => item.exchange)),
