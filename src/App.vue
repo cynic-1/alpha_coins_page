@@ -19,12 +19,13 @@ axios.get('/api/top_tokens_vs_btc').then((response: any) => {
 
 <template>
   <div v-if="data" class="container">
-    <el-table :data="data" max-height="500" style="width: 100%">
+    <el-table class="table" :data="data" max-height="80vh" header-cell-class-name="headers" cell-class-name="cells">
       <template v-for="(_, key) in data[0]">
         <el-table-column
           v-if="`${key}` === 'exchange'"
           :prop="key"
           :label="key"
+          width="110"
           :filters="filters"
           :filter-method="filterHandler"
         ></el-table-column>
@@ -36,10 +37,23 @@ axios.get('/api/top_tokens_vs_btc').then((response: any) => {
 
 <style scoped>
 .container {
-  padding: 0 20px;
+  padding: 0 10px;
   height: 100vh;
   display: grid;
   place-items: center;
   overflow: auto;
+
+  .table {
+    border: 1px solid #ebeef5;
+  }
+}
+</style>
+
+<style>
+.headers,
+.cells {
+  .cell {
+    padding: 0 5px;
+  }
 }
 </style>
