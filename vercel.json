@@ -1,8 +1,8 @@
 {
   "routes": [
     {
-      "src": "/api/:path(.*)",
-      "dest": "http://ec2-13-210-227-179.ap-southeast-2.compute.amazonaws.com:3000/:path",
+      "src": "/api/(.*)",
+      "dest": "http://ec2-13-210-227-179.ap-southeast-2.compute.amazonaws.com:3000/:path*",
       "methods": ["GET", "POST", "PUT", "DELETE"]
     }
   ]
