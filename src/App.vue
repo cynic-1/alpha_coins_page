@@ -55,7 +55,7 @@ const changeTable = (key: keyof typeof api) => {
             :filters="filters"
             :filter-method="filterHandler"
           ></el-table-column>
-          <el-table-column v-else :prop="key" :label="key"></el-table-column>
+          <el-table-column v-else :prop="key" :label="key" min-width="105"></el-table-column>
         </template>
       </el-table>
     </div>
