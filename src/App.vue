@@ -6,6 +6,7 @@ import { api } from './utils/config'
 
 const loading = ref(false)
 const data = ref()
+const table = ref()
 const curTable = ref<keyof typeof api>(Object.keys(api)[0] as keyof typeof api)
 const filters = ref()
 const filterHandler = (value: any, row: any, column: any) => {
@@ -22,6 +23,7 @@ watchEffect(() => {
     ].map((item: any) => ({ text: item, value: item }))
   }).finally(() => {
     loading.value = false
+    table.value.scrollTo(0, 0)
   })
 })
 
@@ -43,7 +45,7 @@ const changeTable = (key: keyof typeof api) => {
       </template>
     </el-dropdown>
     <div class="container">
-      <el-table class="table" :data="data" max-height="80vh" header-cell-class-name="headers" cell-class-name="cells" v-loading="loading">
+      <el-table class="table" ref="table" :data="data" max-height="80vh" header-cell-class-name="headers" cell-class-name="cells" v-loading="loading">
         <template v-for="(_, key) in data[0]">
           <el-table-column
             v-if="`${key}` === 'exchange'"
