@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue'
+import { ref } from 'vue'
 import axios from 'axios'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { useApi } from './hooks/useApi'
@@ -28,7 +28,7 @@ const getData = () => {
       data.value = response.data.map((item: any) => {
         return {
           ...item,
-          timestamp: new Date(item.timestamp).toLocaleString('zh-CN'),
+          timestamp: new Date(item.timestamp*1000).toLocaleString('zh-CN'),
         }
       })
       filters.value = [
