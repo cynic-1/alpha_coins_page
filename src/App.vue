@@ -2,38 +2,48 @@
 import { ref, watchEffect } from 'vue'
 import axios from 'axios'
 import { ArrowDown } from '@element-plus/icons-vue'
-import { api } from './utils/config'
+import { useApi } from './hooks/useApi'
 
 const loading = ref(false)
 const data = ref()
 const table = ref()
-const curTable = ref<keyof typeof api>(Object.keys(api)[0] as keyof typeof api)
+const curTable = ref()
+let api: { [key: string]: string }
+useApi().then((res: any) => {
+  api = res
+  curTable.value = Object.keys(api)[0]
+  getData()
+})
 const filters = ref()
 const filterHandler = (value: any, row: any, column: any) => {
   const property = column['property']
   return row[property] === value
 }
 
-watchEffect(() => {
+const getData = () => {
   loading.value = true
-  axios.get(api[curTable.value]).then((response: any) => {
-    data.value = response.data
-    filters.value = [
-      ...new Set(data.value.map((item: any) => item.exchange)),
-    ].map((item: any) => ({ text: item, value: item }))
-  }).finally(() => {
-    loading.value = false
-    table.value.scrollTo(0, 0)
-  })
-})
-
-const changeTable = (key: keyof typeof api) => {
-  curTable.value = key
+  axios
+    .get(api[curTable.value])
+    .then((response: any) => {
+      data.value = response.data.map((item: any) => {
+        return {
+          ...item,
+          timestamp: new Date(item.timestamp).toLocaleString('zh-CN'),
+        }
+      })
+      filters.value = [
+        ...new Set(data.value.map((item: any) => item.exchange)),
+      ].map((item: any) => ({ text: item, value: item }))
+    })
+    .finally(() => {
+      loading.value = false
+      table.value?.scrollTo(0, 0)
+    })
 }
 
-const formatTimestamp = (timestamp: any) => {
-      const date = new Date(timestamp);
-      return date.toLocaleString();
+const changeTable = (key: any) => {
+  curTable.value = `${key}`
+  getData()
 }
 </script>
 
@@ -45,12 +55,22 @@ const formatTimestamp = (timestamp: any) => {
       </el-button>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item v-for="(_, k) in api" @click="changeTable(k)">{{ k }}</el-dropdown-item>
+          <el-dropdown-item v-for="(_, k) in api" @click="changeTable(k)">{{
+            k
+          }}</el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
     <div class="container">
-      <el-table class="table" ref="table" :data="data" max-height="80vh" header-cell-class-name="headers" cell-class-name="cells" v-loading="loading">
+      <el-table
+        class="table"
+        ref="table"
+        :data="data"
+        max-height="80vh"
+        header-cell-class-name="headers"
+        cell-class-name="cells"
+        v-loading="loading"
+      >
         <template v-for="(_, key) in data[0]">
           <el-table-column
             v-if="`${key}` === 'exchange'"
@@ -60,8 +80,12 @@ const formatTimestamp = (timestamp: any) => {
             :filters="filters"
             :filter-method="filterHandler"
           ></el-table-column>
-          <el-table-column v-else-if="`${key}` === 'timestamp'" :prop="key" :label="formatTimestamp(key)" min-width="105"></el-table-column>
-          <el-table-column v-else :prop="key" :label="key" min-width="105"></el-table-column>
+          <el-table-column
+            v-else
+            :prop="key"
+            :label="key"
+            min-width="105"
+          ></el-table-column>
         </template>
       </el-table>
     </div>
