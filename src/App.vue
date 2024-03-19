@@ -30,6 +30,11 @@ watchEffect(() => {
 const changeTable = (key: keyof typeof api) => {
   curTable.value = key
 }
+
+const formatTimestamp = (timestamp: any) => {
+      const date = new Date(timestamp);
+      return date.toLocaleString();
+}
 </script>
 
 <template>
@@ -55,6 +60,7 @@ const changeTable = (key: keyof typeof api) => {
             :filters="filters"
             :filter-method="filterHandler"
           ></el-table-column>
+          <el-table-column v-else-if="`${key}` === 'timestamp'" :prop="key" :label="formatTimestamp(key)" min-width="105"></el-table-column>
           <el-table-column v-else :prop="key" :label="key" min-width="105"></el-table-column>
         </template>
       </el-table>
