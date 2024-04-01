@@ -24,12 +24,9 @@ const filterHandler = (value: any, row: any, column: any) => {
 
 const getData = () => {
   loading.value = true
-  axios
-    .get(api[curTable.value], {
-      params: {
-        cmc_rank: `lte.${top_count.value}`,
-      },
-    })
+  if top_count.value === 'ALL' {
+    axios
+    .get(api[curTable.value])
     .then((response: any) => {
       data.value = response.data.map((item: any) => {
         return {
@@ -45,6 +42,30 @@ const getData = () => {
       loading.value = false
       table.value?.scrollTo(0, 0)
     })
+  } else {
+
+    axios
+      .get(api[curTable.value], {
+        params: {
+          cmc_rank: `lte.${top_count.value}`,
+        },
+      })
+      .then((response: any) => {
+        data.value = response.data.map((item: any) => {
+          return {
+            ...item,
+            timestamp: new Date(item.timestamp*1000).toLocaleString('zh-CN'),
+          }
+        })
+        filters.value = [
+          ...new Set(data.value.map((item: any) => item.exchange)),
+        ].map((item: any) => ({ text: item, value: item }))
+      })
+      .finally(() => {
+        loading.value = false
+        table.value?.scrollTo(0, 0)
+      })
+  }
 }
 
 const changeTable = (key: any) => {
@@ -67,7 +88,7 @@ const changeTopCount = (k: any) => {
       </el-button>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item v-for="k in [100, 200, 500]" @click="changeTopCount(k)">{{
+          <el-dropdown-item v-for="k in [100, 200, 500, 'ALL']" @click="changeTopCount(k)">{{
             k
           }}</el-dropdown-item>
         </el-dropdown-menu>
