@@ -8,7 +8,7 @@ const loading = ref(false)
 const data = ref()
 const table = ref()
 const curTable = ref()
-const top_count = ref(100)
+const top_count = ref('100')
 
 let api: { [key: string]: string }
 useApi().then((res: any) => {
