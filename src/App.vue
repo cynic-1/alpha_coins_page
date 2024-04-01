@@ -88,7 +88,7 @@ const changeTopCount = (k: any) => {
       </el-button>
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item v-for="k in [100, 200, 500, 'ALL']" @click="changeTopCount(k)">{{
+          <el-dropdown-item v-for="k in ['100', '200', '500', 'ALL']" @click="changeTopCount(k)">{{
             k
           }}</el-dropdown-item>
         </el-dropdown-menu>
