@@ -24,7 +24,7 @@ const filterHandler = (value: any, row: any, column: any) => {
 
 const getData = () => {
   loading.value = true
-  if top_count.value === 'ALL' {
+  if (top_count.value === 'ALL') {
     axios
     .get(api[curTable.value])
     .then((response: any) => {
